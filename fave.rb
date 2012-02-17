@@ -13,11 +13,13 @@ $suggestedLinks = {"http://www.bankofamerica.com" => "Bank Of America", "http://
 $sitesHash = {}
 $toBeDeletedLinksHash = {}
 
+#The homepage displays all the favorite URLs
 get '/' do
    $sitesHash = r.hgetall 'favoriteURLs'
    erb :index
 end
 
+#if there is a get or a post to /register, the register page will be rendered
 post '/register' do
    erb :register
 end
@@ -26,6 +28,7 @@ get '/register' do
    erb :register
 end
 
+#"edit" from Truc's code is called "customize" in this code
 get '/edit' do
      erb :customize
 end
@@ -34,10 +37,12 @@ get '/customize' do
     erb :customize
 end
 
+#login page
 get '/login' do
   erb :login
 end
 
+#addURL and removeURL are form actions performed on the /customize page.
 post '/addURL' do
    @hiddenURL = params[:hiddenURL]
    @url = params[:myURL]
@@ -66,7 +71,8 @@ post '/removeURL' do
    redirect '/edit'
 end
 
+#this section is no longer needed since the favorite URLs will be displayed on the front page.
 get '/mySites' do
    $sitesHash = r.hgetall 'favoriteURLs'
-   erb :displaySites
+   erb :index
 end
