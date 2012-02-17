@@ -14,15 +14,27 @@ $sitesHash = {}
 $toBeDeletedLinksHash = {}
 
 get '/' do
-   erb :test1
+   erb :index
 end
 
 post '/register' do
    erb :register
 end
 
+get '/register' do
+   erb :register
+end
+
 get '/edit' do
-     erb :edit
+     erb :customize
+end
+
+get '/customize' do
+    erb :customize
+end
+
+get '/login' do
+  erb :login
 end
 
 post '/addURL' do
