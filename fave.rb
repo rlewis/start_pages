@@ -14,6 +14,7 @@ $sitesHash = {}
 $toBeDeletedLinksHash = {}
 
 get '/' do
+   $sitesHash = r.hgetall 'favoriteURLs'
    erb :index
 end
 
