@@ -4,7 +4,11 @@
     <title>Start Page!</title>
     <link rel="stylesheet" href="css/row.css" type="text/css" />
   </head>
+<% if $newBg=="default" %>
   <body>
+<% else %>
+  <body background="#<%=$newBg%>">
+<% end %>
 
     <div class="top_right_text">
           <b>Click here to </b>
@@ -15,20 +19,20 @@
 	<ul class="horizontal_list">
 		<% #if no custom sites have been set, display the default sites..
 		if $sitesHash.empty? %>
-			<li><a href="http://www.facebook.com"><img src="images/icon-facebook.png" /></a>
+			<li><a href="http://www.facebook.com"><img src="images/Facebook.png" /></a>
 			</li>
-			<li><a href="http://www.gmail.com"><img src="images/icon-gmail.png" /></a>
+			<li><a href="http://www.gmail.com"><img src="images/Gmail.png" /></a>
 			</li>
-			<li><a href="http://www.amazon.com"><img src="images/icon-amazon.png" /></a>
+			<li><a href="http://www.amazon.com"><img src="images/Amazon.png" /></a>
 			</li>
-			<li><a href="http://www.twitter.com"><img src="images/icon-twitter.png" /></a>
+			<li><a href="http://www.twitter.com"><img src="images/Twitter.png" /></a>
 			</li>
-			<li><a href="http://www.github.com"><img src="images/icon-github.png" /></a>
+			<li><a href="http://www.github.com"><img src="images/Github.png" /></a>
 			</li>
 		<% #if there are custom sites to display, display them:
 		else %>
 			<%$sitesHash.each do |k, v|%>
-      		  	   <li><a href="<%=$sitesHash.index(v)%>" id="link"><strong><%=$sitesHash[k]%></strong></a></li>
+      	<li><a href="<%=$sitesHash.index(v)%>" id="link"><img src="images/<%=$sitesHash[k].gsub(" ", "_")%>.png" /></a></li>
 			<%end%>
 		<%end%>
 	</ul>

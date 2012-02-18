@@ -4,12 +4,12 @@ require 'redis'
 r = Redis.new
 #r.flushdb
 
-$suggestedLinks = {"http://www.bankofamerica.com" => "Bank Of America", "http://www.fullerton.edu" => "Cal State Fulllerton", 
-"http://www.youtube.com" => "YouTube", "http://www.facebook.com" => "Facebook", "http://csuf.kenytt.net" => "Web Programming CPSC 473, CSU Fullerton",
-"http://www.frys.com" => "Frys Electronic", "http://www.nasa.com" => "NASA", "http://www.ruby-doc.org/core-1.9.3/" => "Ruby API",
-"http://redis.io/commands" => "Redis API"}
+$suggestedLinks = {"http://www.bankofamerica.com" => "Bank_Of_America", "http://www.fullerton.edu" => "Cal_State_Fulllerton", 
+"http://www.youtube.com" => "YouTube", "http://www.facebook.com" => "Facebook", "http://www.amazon.com" => "Amazon",
+"http://www.gmail.com" => "Gmail", "http://www.twitter.com" => "Twitter", "http://www.ruby-doc.org/core-1.9.3/" => "Ruby_API",
+"http://redis.io/commands" => "Redis_API", "http://www.github.com" => "Github"}
 
-
+$newBg = "default"
 $sitesHash = {}
 $toBeDeletedLinksHash = {}
 
@@ -19,11 +19,15 @@ get '/' do
    erb :index
 end
 
-#if there is a get or a post to /register, the register page will be rendered
-post '/register' do
-   erb :register
+#after the registration form is submitted, information will be sent here
+post '/register_process' do
+  @reg_email = params[:email]
+  @reg_pass = params[:password]
+  #enter this information into the database
+  redirect '/login'
 end
 
+#registration form is here
 get '/register' do
    erb :register
 end
@@ -37,9 +41,25 @@ get '/customize' do
     erb :customize
 end
 
-#login page
+#login form
 get '/login' do
   erb :login
+end
+
+#after the login form is submitted, information will be passed here
+post '/login_process' do
+  @login_email = params[:email]
+  @login_pass = params[:password]
+  #check credentials
+      #if error, redirect to '/login_error'
+      #if not, continue
+  #load user's settings
+  redirect '/'
+end
+
+#if there is a login error, redirect to this page
+get '/login_error' do
+   erb :login_error
 end
 
 #addURL and removeURL are form actions performed on the /customize page.
@@ -47,6 +67,10 @@ post '/addURL' do
    @hiddenURL = params[:hiddenURL]
    @url = params[:myURL]
    @siteName = params[:siteName]
+   @image = params[:image]
+
+   #Change "Bank of America" to "Bank_Of_America"
+   @siteName.gsub!(" ","_")
 
    if((@hiddenURL != nil) && (@url == nil))
    	r.hsetnx 'favoriteURLs',@hiddenURL, @siteName 
@@ -75,4 +99,11 @@ end
 get '/mySites' do
    $sitesHash = r.hgetall 'favoriteURLs'
    erb :index
+end
+
+#User changes the background color
+post '/background' do
+   $newBg = params[:background]
+   $newBg.gsub!("#","")
+   redirect '/'
 end

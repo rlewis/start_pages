@@ -13,7 +13,9 @@
 			<%$suggestedLinks.each do |k, v|%>	   		 
 		   	<form action="addURL" method="POST">
 			   <fieldset>
-			   <label><%=$suggestedLinks[k]%></label>
+			   <label>
+				<%= $suggestedLinks[k].gsub("_", " ") %>
+			   </label>
 			   <input type="hidden" name="hiddenURL" id="hiddenURL" value="<%=$suggestedLinks.index(v)%>"/>
 			   <input type="hidden" name="siteName" value="<%=$suggestedLinks[k]%>"/>
 			   <input type="submit" name="addSuggestedURL" value="Add" id="addSuggestedURL"/>
@@ -24,7 +26,7 @@
 		   <%$toBeDeletedLinksHash.each do |k, v|%>	   		 
 		   	<form action="removeURL" method="POST">
 			   <fieldset>
-			   <label><%=$toBeDeletedLinksHash[k]%></label>
+			   <label><%=$toBeDeletedLinksHash[k].gsub("_", " ")%></label>
 			   <input type="hidden" name="hiddenURL" id="hiddenURL" value="<%=$toBeDeletedLinksHash.index(v)%>"/>
 			   <input type="hidden" name="siteName" value="<%=$toBeDeletedLinksHash[k]%>"/>
 			   <input type="submit" name="removeURL" value="Remove" id="removeURL"/>
@@ -33,13 +35,15 @@
 		   <%end%>
 
 	<h1>Don't see anything you like?</h1>
-		<p>Enter your site name and URL</p>
+		<p>Enter your site name, URL, and Image</p>
 			<form action="addURL" method="POST" />
-			<label>Site Name</label>
-			<input type="text" name="siteName" value=""/>
 			<p>
-    			<label>URL</lable>
-			<input type="text" size="25" name="myURL" id="myURL" value="http://"/>
+			Site Name<br />
+			<input type="text" name="siteName" value=""/><br /><br />
+ 			URL<br />
+			<input type="text" size="25" name="myURL" id="myURL" value="http://"/><br /><br />
+			Upload Image (Must be a png, please crop to be 156x156)<br />
+			<input type="file" name="image" id="image" accept="image/png"><br />
 			<div class="submit">
 			<input type="submit" name="add" value="Add" id="addURL"/>
 			</div>
@@ -48,10 +52,10 @@
 		   </form>
 	</div>
     <div>
-<form id="login" method="post" action=""> 
+<form id="login" method="post" action="background"> 
 <h1>Want to change the background?</h1>
     	<label for="background">Background color: (Ex: #FFFFFF)</label>
-    		<input type="text" name="background" id="background" title="Enter the background color" />
+    		<input type="text" name="background" id="background" title="Enter the background color" value="default" />
        	<div class="submit">
 		<button type="submit">Submit</button>
 		</div>
