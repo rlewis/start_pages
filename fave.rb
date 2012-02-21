@@ -19,11 +19,16 @@ configure do
 end
 
 get '/register' do
+   @emptyFields = true
+   @duplicate = true
    erb :register
 end
 
 post '/register' do
-   if(r.hexists 'userInfo', params[:email])
+   r.select 0
+   if((params[:email] == "") || (params[:password] == ""))
+      @emptyFields = true
+   elsif(r.hexists 'userInfo', params[:email])
       @duplicate = true
    else
       r.hset 'userInfo', params[:email], params[:password]
@@ -63,6 +68,7 @@ get '/customize' do
 end
 
 get '/login' do
+   @prompt = true
     erb :login
 end
 
