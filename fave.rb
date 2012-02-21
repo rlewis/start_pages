@@ -2,34 +2,46 @@ require 'sinatra'
 require 'redis'
 
 r = Redis.new
-#r.flushdb
 
-$suggestedLinks = {"http://www.bankofamerica.com" => "Bank_Of_America", "http://www.fullerton.edu" => "Cal_State_Fulllerton", 
-"http://www.youtube.com" => "YouTube", "http://www.facebook.com" => "Facebook", "http://www.amazon.com" => "Amazon",
-"http://www.gmail.com" => "Gmail", "http://www.twitter.com" => "Twitter", "http://www.ruby-doc.org/core-1.9.3/" => "Ruby_API",
-"http://redis.io/commands" => "Redis_API", "http://www.github.com" => "Github"}
-
-$newBg = "default"
-$sitesHash = {}
-$toBeDeletedLinksHash = {}
-
-#The homepage displays all the favorite URLs
-get '/' do
-   $sitesHash = r.hgetall 'favoriteURLs'
-   erb :index
+before do
+   @suggestedLinks = {"http://www.bankofamerica.com" => ["Bank Of America", "icon-boa.png"], "http://www.fullerton.edu" => ["Cal State Fulllerton", "icon-csuf.png"], "http://www.youtube.com" => ["YouTube", "icon-youtube.png"], "http://www.facebook.com" => ["Facebook", "icon-facebook.png"],  "http://www.ruby-doc.org/core-1.9.3/" => ["Ruby API", "icon-ruby.png"], "http://redis.io/commands" => ["Redis API", "icon-redis.png"]}
+   @toBeDeletedLinksHash = {}
+   @favoriteURLs0 = session[:email]
+   @newBg = "default"
 end
 
-#after the registration form is submitted, information will be sent here
-post '/register_process' do
-  @reg_email = params[:email]
-  @reg_pass = params[:password]
-  #enter this information into the database
-  redirect '/login'
+@sitesHash = {}
+@toBeDeletedLinksHash = {}
+@favoriteURLs0
+
+configure do
+   enable :sessions
 end
 
-#registration form is here
 get '/register' do
    erb :register
+end
+
+post '/register' do
+   if(r.hexists 'userInfo', params[:email])
+      @duplicate = true
+   else
+      r.hset 'userInfo', params[:email], params[:password]
+   end
+   erb :register
+end
+
+
+#The homepage displays all the favorite URLs
+get '/' do  
+   if(session[:email] == nil)
+      r.select 1
+      @sitesHash = r.hgetall 'favoriteURLs1'
+   else 
+      r.select 0
+      @sitesHash = r.hgetall @favoriteURLs0
+   end
+   erb :index
 end
 
 #"edit" from Truc's code is called "customize" in this code
@@ -37,29 +49,39 @@ get '/edit' do
      erb :customize
 end
 
-get '/customize' do
-    erb :customize
+get '/customize' do  
+   if(session[:email] == nil)
+      r.select 1
+      @sitesHash = r.hgetall 'favoriteURLs1'
+      @toBeDeletedLinksHash = r.hgetall 'favoriteURLs1'
+   else 
+      r.select 0
+      @sitesHash = r.hgetall @favoriteURLs0
+      @toBeDeletedLinksHash = r.hgetall @favoriteURLs0
+   end
+   erb :customize
 end
 
-#login form
 get '/login' do
+    erb :login
+end
+
+
+#login page
+post '/login' do
+  r.select 0
+
+  @invalidInfo = false
+   if (!(r.hexists 'userInfo', params[:email]) && !(r.hexists 'userInfo', params[:password]))
+     @invalidInfo = true
+   end
+
+  if ((r.hexists 'userInfo', params[:email]) && !((r.hget 'userInfo', params[:email]).eql? params[:password]) )
+     @invalidInfo = true
+  else
+     session[:email] = params[:email]
+  end
   erb :login
-end
-
-#after the login form is submitted, information will be passed here
-post '/login_process' do
-  @login_email = params[:email]
-  @login_pass = params[:password]
-  #check credentials
-      #if error, redirect to '/login_error'
-      #if not, continue
-  #load user's settings
-  redirect '/'
-end
-
-#if there is a login error, redirect to this page
-get '/login_error' do
-   erb :login_error
 end
 
 #addURL and removeURL are form actions performed on the /customize page.
@@ -67,43 +89,61 @@ post '/addURL' do
    @hiddenURL = params[:hiddenURL]
    @url = params[:myURL]
    @siteName = params[:siteName]
-   @image = params[:image]
-
-   #Change "Bank of America" to "Bank_Of_America"
-   @siteName.gsub!(" ","_")
-
-   if((@hiddenURL != nil) && (@url == nil))
-   	r.hsetnx 'favoriteURLs',@hiddenURL, @siteName 
-	r.hsetnx 'toBeDeletedLinks', @hiddenURL, @siteName
-	$suggestedLinks.delete(@hiddenURL)
+   @siteImage = params[:siteImage]
+         
+   if(session[:email] == nil)
+      r.select 1
+      if((@hiddenURL != nil) && (@url == nil))
+   	 r.hsetnx 'favoriteURLs1',@hiddenURL, @siteName 
+      else
+        r.hsetnx 'favoriteURLs1', @url, @siteName
+      end
    else
-       r.hsetnx 'favoriteURLs', @url, @siteName
-	r.hsetnx 'toBeDeletedLinks', @url, @siteName
+      r.select 0
+      if((@hiddenURL != nil) && (@url == nil))
+   	 r.hsetnx @favoriteURLs0,@hiddenURL, @siteName 
+      else
+        r.hsetnx @favoriteURLs0, @url, @siteName
+      end
    end
-
-   $toBeDeletedLinksHash = r.hgetall 'toBeDeletedLinks'
-   redirect '/edit'
+   redirect '/'
 end
 
 post '/removeURL' do
-   @hiddenURL = params[:hiddenURL]
-   @siteName = params[:siteName]
-   $suggestedLinks[@hiddenURL] = @siteName
-   r.hdel 'favoriteURLs', @hiddenURL
-   r.hdel 'toBeDeletedLinks', @hiddenURL
-   $toBeDeletedLinksHash = r.hgetall 'toBeDeletedLinks'
-   redirect '/edit'
+     if(session[:email] == nil)
+      r.select 1
+      @hiddenURL = params[:hiddenURL]
+      @siteName = params[:siteName]
+      @suggestedLinks[@hiddenURL] = @siteName
+      r.hdel 'favoriteURLs1', @hiddenURL
+      redirect '/'
+   else
+      r.select 0
+      @hiddenURL = params[:hiddenURL]
+      @siteName = params[:siteName]
+      @suggestedLinks[@hiddenURL] = @siteName
+      r.hdel @favoriteURLs0, @hiddenURL
+      redirect '/'
+   end  
 end
+
+get '/logout' do
+   r.select 1
+   r.flushdb 
+   session.clear  
+   redirect '/'
+end
+   
 
 #this section is no longer needed since the favorite URLs will be displayed on the front page.
 get '/mySites' do
-   $sitesHash = r.hgetall 'favoriteURLs'
+   @sitesHash = r.hgetall 'favoriteURLs'
    erb :index
 end
 
 #User changes the background color
 post '/background' do
-   $newBg = params[:background]
-   $newBg.gsub!("#","")
+   @newBg = params[:background]
+   @newBg.gsub!("#","")
    redirect '/'
 end

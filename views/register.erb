@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="css/login_register.css" type="text/css" />
 </head>
 <body>
-<form id="login" method="post" action="register_process"> 
+<form id="login" method="post" action=""> 
 
     <h1>Register!</h1>
     <p class="register">Already a member? <a href="/login">Login here!</a></p>
@@ -28,6 +28,10 @@
     <p class="back"><a href="/customize">Go back to customizing your start page</a></p>
   
 </form>	
+
+<%if(@duplicate)%>
+   <label>This email has been taken. Enter another one.</label>
+<%end%>
 
 </body>
 </html>

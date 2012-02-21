@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="css/login_register.css" type="text/css" />
 </head>
 <body>
-<form id="login" method="post" action="login_process"> 
+<form id="login" method="post" action=""> 
 
     <h1>Log in!</h1>
     <p class="register">Not a member? <a href="/register">Register here!</a></p>
@@ -28,6 +28,13 @@
     <p class="back"><a href="/customize">Go back to customizing your start page</a></p>
   
 </form>	
+
+<%if(@invalidInfo)%>
+   <div>
+      <label>Invalid log in information. Try again!</label>
+   </div>
+<%end%>
+
 
 </body>
 </html>
