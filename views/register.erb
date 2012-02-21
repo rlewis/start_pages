@@ -29,8 +29,12 @@
   
 </form>	
 
-<%if(@duplicate)%>
-   <label>This email has been taken. Enter another one.</label>
+<%if(@emptyFields)%>
+  <label>Please enter your email and password</label>
+<%elsif(@duplicate)%>
+  <label>This email has been registered. Please log in. </label>
+<%else%>
+   <label>You have registered successfully!</label>
 <%end%>
 
 </body>
