@@ -115,7 +115,7 @@ post '/addURL' do
         r.hsetnx @favoriteURLs0, @url, @siteName
       end
    end
-   redirect '/'
+   redirect '/customize'
 end
 
 post '/removeURL' do
