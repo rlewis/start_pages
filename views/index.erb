@@ -4,10 +4,10 @@
     <title>Start Page!</title>
     <link rel="stylesheet" href="css/row.css" type="text/css" />
 </head>
-<% if $newBg=="default" %>
+<% if $newBg=="default" && $newBgImg=="default"%>
   <body>
 <% else %>
-  <body background="#<%=$newBg%>">
+  <body style="background: #<%=$newBg%> url(../images/<%=$newBgImg%>Gradient.png) repeat-x fixed;"> 
 <% end %>
 
     <div class="top_right_text">

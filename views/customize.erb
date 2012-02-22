@@ -3,8 +3,8 @@
   <head>
     <title>Customize your start page</title>
     <link rel="stylesheet" href="css/customize.css" type="text/css" />
-    <script src="javascripts/jquery-1.7.1.js" type="text/javascript"></script>
-    <script src="javascripts/custom.js" type="text/javascript"></script>
+    <script src="javascript/jquery-1.7.1.js" type="text/javascript"></script>
+    <script src="javascript/custom.js" type="text/javascript"></script>
 </head>
 <body>
     <div class="top_right_text">
@@ -73,11 +73,15 @@
       <h1>Click to customize your page!</h1>
       <div id="sectionBreak">
       <form id="frmAction"  method="post" action="update"> 
-    	<label for="background">Background color: (Ex: #ffffff)</label>
+    	<label for="background">Bg color/image: (Ex: ffffff)</label>
       <input type="text" name="background" id="background" title="Enter the background color" value="default"/>
-      <label for="layout">Background image: </label>
-      <input type="text" name="layout" id="layout" title="Choose a layout" />
-       	<div class="submit">
+      <select name="bgimage" id="bgimage" >
+        <option id="bgimageopt" value="none">none</option>
+        <option id="bgimageopt" value="bg">default</option>
+        <option id="bgimageopt" value="girlie">girlie</option>
+        <option id="bgimageopt" value="scary">scary</option>
+      </select>
+      	<div class="submit">
           <button name="settings" value="Update" type="submit">Update</button>
         </div>
       </form>

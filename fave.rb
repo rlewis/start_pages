@@ -16,6 +16,7 @@ end
 configure do
    enable :sessions
    $newBg = "default"
+   $newBgImg = "default"
 end
 
 get '/register' do
@@ -40,6 +41,7 @@ end
 #The homepage displays all the favorite URLs
 get '/' do  
 	puts $newBg
+  puts $newBgImg
    if(session[:email] == nil)
       r.select 1
       @sitesHash = r.hgetall 'favoriteURLs1'
@@ -97,7 +99,7 @@ post '/addURL' do
    @url = params[:myURL]
    @siteName = params[:siteName]
    @siteImage = params[:siteImage]
-         
+
    if(session[:email] == nil)
       r.select 1
       if((@hiddenURL != nil) && (@url == nil))
@@ -151,6 +153,9 @@ end
 #User changes the background color
 post '/update' do
    $newBg = params[:background]
-   $newBg.gsub!("#","")
+   if ($newBg == "default")
+     $newBg = "95a2a6"
+   end
+   $newBgImg = params[:bgimage]
    redirect '/'
 end

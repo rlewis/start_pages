@@ -50,24 +50,8 @@ body, table, input, textarea, select, li, button{
 body{
 	line-height: 1;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	background: no-repeat center center fixed;
-		-webkit-background-size: cover;
-		-moz-background-size: cover;
-		-o-background-size: cover;
-		background-size: cover;
-	background-image: linear-gradient(bottom, rgb(149,162,166) 19%, rgb(215,213,245) 60%);
-	background-image: -o-linear-gradient(bottom, rgb(149,162,166) 19%, rgb(215,213,245) 60%);
-	background-image: -moz-linear-gradient(bottom, rgb(149,162,166) 19%, rgb(215,213,245) 60%);
-	background-image: -webkit-linear-gradient(bottom, rgb(149,162,166) 19%, rgb(215,213,245) 60%);
-	background-image: -ms-linear-gradient(bottom, rgb(149,162,166) 19%, rgb(215,213,245) 60%);
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0.19, rgb(149,162,166)),
-		color-stop(0.6, rgb(215,213,245))
-		);
-	text-align:center;
+	background: #951216 url(../images/bgGradient.png) repeat-x fixed;
+  text-align:center;
 	}		
 
 /* // base */
