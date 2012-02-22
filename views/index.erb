@@ -4,10 +4,10 @@
     <title>Start Page!</title>
     <link rel="stylesheet" href="css/row.css" type="text/css" />
 </head>
-<% if @@newBg=="default" %>
+<% if $newBg=="default" %>
   <body>
 <% else %>
-  <body background="#<%=@@newBg%>">
+  <body background="#<%=$newBg%>">
 <% end %>
 
     <div class="top_right_text">
@@ -35,7 +35,13 @@
 		<% #if there are custom sites to display, display them:
 		else %>
 			<%@sitesHash.each do |k, v|%>
-        <li><a href="<%=@sitesHash.index(v)%>" id="link"><strong><%=@sitesHash[k]%></strong></a></li>
+				<% @url=@sitesHash.index(v) %>
+        			<li><a href="<%=@url%>" id="link">
+       				<% @image = @suggestedLinks.select {|k,v| k=="#{@url}"}
+					   @image.each do |k, v| %>
+						<img src="images/<%= @suggestedLinks[k][1] %>" /></a>
+       	 			<%end%>
+				</li>
 			<%end%>
 		<%end%>
 	</ul>

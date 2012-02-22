@@ -7,7 +7,7 @@ before do
    @suggestedLinks = {"http://www.bankofamerica.com" => ["Bank Of America", "icon-boa.png"], "http://www.fullerton.edu" => ["Cal State Fulllerton", "icon-csuf.png"], "http://www.youtube.com" => ["YouTube", "icon-youtube.png"], "http://www.facebook.com" => ["Facebook", "icon-facebook.png"],  "http://www.ruby-doc.org/core-1.9.3/" => ["Ruby API", "icon-ruby.png"], "http://redis.io/commands" => ["Redis API", "icon-redis.png"]}
    @toBeDeletedLinksHash = {}
    @favoriteURLs0 = session[:email]
-   @@newBg = "default"
+   $newBg = "default"
 end
 
 @sitesHash = {}
@@ -149,7 +149,7 @@ end
 
 #User changes the background color
 post '/background' do
-   @@newBg = params[:background]
-   @@newBg.gsub!("#","")
+   $newBg = params[:background]
+   $newBg.gsub!("#","")
    redirect '/'
 end
