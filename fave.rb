@@ -39,7 +39,6 @@ end
 
 #The homepage displays all the favorite URLs
 get '/' do  
-	puts $newBg
    if(session[:email] == nil)
       r.select 1
       @sitesHash = r.hgetall 'favoriteURLs1'
@@ -96,8 +95,15 @@ post '/addURL' do
    @hiddenURL = params[:hiddenURL]
    @url = params[:myURL]
    @siteName = params[:siteName]
-   @siteImage = params[:siteImage]
-         
+   #here we upload the image
+	@fileName = params[:file][:filename]
+	File.open('public/images/' + @fileName, "w") do |f|
+    	f.write(params[:file][:tempfile].read)
+  	end
+   #let's add that link to the suggested URLs
+	@addThis = {@url => [@siteName, @fileName]}
+
+   #here we add the site to favoriteURLs
    if(session[:email] == nil)
       r.select 1
       if((@hiddenURL != nil) && (@url == nil))

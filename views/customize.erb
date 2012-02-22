@@ -52,7 +52,7 @@
         <%end%>
         <h1>Click to add your own links.</h1>
         <div id="sectionBreak">
-    <form id="frmAction" action="addURL" method="POST" />			
+    <form id="frmAction" action="addURL" method="POST" enctype="multipart/form-data" />			
 			<p>Enter you site name and URL</p>
 			<label>Site Name</label>
 				<input type="text" name="siteName" value=""/>
@@ -61,7 +61,7 @@
 				<input type="text" size="25" name="myURL" id="myURL" value="http://"/>
 			</p><p>
 			<label>Upload Image</label>
-				<input type="file" name="image" id="image">
+				<input type="file" name="file" id="file">
 			</p><p>
 			<em>(please crop to be 156x156)</em>
 			<div class="submit">
