@@ -2,8 +2,6 @@ require 'sinatra'
 require 'redis'
 require 'rubygems' # may be needed by heroku
 
-uri = URI.parse(ENV["REDISTOGO_URL"])
-   r = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 
 before do
    @suggestedLinks = {"http://www.bankofamerica.com" => ["Bank Of America", "icon-boa.png"], "http://www.fullerton.edu" => ["Cal State Fulllerton", "icon-csuf.png"], "http://www.youtube.com" => ["YouTube", "icon-youtube.png"], "http://www.facebook.com" => ["Facebook", "icon-facebook.png"],  "http://www.ruby-doc.org/core-1.9.3/" => ["Ruby API", "icon-ruby.png"], "http://redis.io/commands" => ["Redis API", "icon-redis.png"], "http://www.amazon.com" => ["Amazon", "icon-amazon.png"], "http://www.github.com" => ["GitHub", "icon-github.png"], "http://www.gmail.com" => ["Gmail", "icon-gmail.png"], "http://www.twitter.com" => ["Twitter", "icon-twitter.png"]}
@@ -16,6 +14,8 @@ end
 @favoriteURLs0
 
 configure do
+   uri = URI.parse(ENV["REDISTOGO_URL"])
+   r = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 
    
    enable :sessions
