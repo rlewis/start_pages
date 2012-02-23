@@ -17,6 +17,7 @@ configure do
    enable :sessions
    $newBg = "default"
    $newBgImg = "default"
+   $customImages = Hash.new
 end
 
 get '/register' do
@@ -98,7 +99,15 @@ post '/addURL' do
    @hiddenURL = params[:hiddenURL]
    @url = params[:myURL]
    @siteName = params[:siteName]
-   @siteImage = params[:siteImage]
+
+   #here we upload the image
+      @fileName = params[:file][:filename]
+      File.open('public/images/' + @fileName, "w") do |f|
+      f.write(params[:file][:tempfile].read)
+      end
+   
+$customImages = {@url => @fileName}
+   
 
    if(session[:email] == nil)
       r.select 1
