@@ -43,7 +43,11 @@
        	 			<%end%>
 				</li>
 			<%end%>
-		<%end%>
+    <%end%>
+    <%$customImages.each do |k,v|%>
+		<%url=$customImages.index(v) %>
+		<li><a href="<%=@url%>"><img src="images/<%=$customImages[k]%>" /></a></li>      
+    <%end%>
 	</ul>
     </div>
   </body>
