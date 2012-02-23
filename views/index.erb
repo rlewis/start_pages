@@ -43,6 +43,7 @@
 						<img src="images/<%= @suggestedLinks[k][1] %>" /></a>
        	 			<%end%>
 				</li>
+			<%end%>
 		<%end
 		if !@annon_sitesHash.empty?%>
 			<%@annon_sitesHash.each do |k, v|%>
@@ -53,8 +54,8 @@
 						<img src="images/<%= @suggestedLinks[k][1] %>" /></a>
        	 			<%end%>
 				</li>
+			<%end%>
 		<%end%>
-    <%end%>
     <%$customImages.each do |k,v|%>
 		<%url=$customImages.index(v) %>
 		<li><a href="<%=@url%>"><img src="images/<%=$customImages[k]%>" /></a></li>      
