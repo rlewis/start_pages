@@ -158,8 +158,6 @@ post '/removeURL' do
 end
 
 get '/logout' do
-   REDIS.select 0
-   REDIS.flushdb 
    session.clear  
    redirect '/'
 end
