@@ -42,15 +42,14 @@ end
 
 #The homepage displays all the favorite URLs
 get '/' do  
-	puts $newBg
-  puts $newBgImg
    if(session[:email] == nil)
       r.select 1
       @sitesHash = r.hgetall 'favoriteURLs1'
    else 
       r.select 0
       @user_prefs = r.hgetall "user_prefs"
-      puts @user_prefs
+      $newBg = @user_prefs["setting_bg_color"]
+      $newBgImg = @user_prefs["setting_bg"]
       @sitesHash = r.hgetall @favoriteURLs0
    end
    erb :index
