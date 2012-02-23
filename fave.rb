@@ -42,15 +42,14 @@ end
 
 #The homepage displays all the favorite URLs
 get '/' do  
-	puts $newBg
-  puts $newBgImg
    if(session[:email] == nil)
       r.select 1
       @sitesHash = r.hgetall 'favoriteURLs1'
    else 
       r.select 0
       @user_prefs = r.hgetall "user_prefs"
-      puts @user_prefs
+      $newBg = @user_prefs["setting_bg_color"]
+      $newBgImg = @user_prefs["setting_bg"]
       @sitesHash = r.hgetall @favoriteURLs0
    end
    erb :index
@@ -103,12 +102,12 @@ post '/addURL' do
    @url = params[:myURL]
    @siteName = params[:siteName]
 
-   if params[:file]=='nil'
+if params[:file]!=nil
    #here we upload the image
       @fileName = params[:file][:filename]
       File.open('public/images/' + @fileName, "w") do |f|
       f.write(params[:file][:tempfile].read)
-      end
+end
 
    #add the image to the "customImages" hash, which we use to display the custom images
    #on index.erb   
