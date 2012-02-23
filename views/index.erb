@@ -21,7 +21,7 @@
     <div id="container">
 	<ul class="horizontal_list">
 		<% #if no custom sites have been set, display the default sites..
-		if @annon_sitesHash.empty? %>
+		if @annon_sitesHash == nil %>
 			<li><a href="http://www.facebook.com"><img src="images/icon-facebook.png" /></a>
 			</li>
 			<li><a href="http://www.gmail.com"><img src="images/icon-gmail.png" /></a>
