@@ -48,6 +48,8 @@ get '/' do
       @sitesHash = r.hgetall 'favoriteURLs1'
    else 
       r.select 0
+      @user_prefs = r.hgetall "user_prefs"
+      puts @user_prefs
       @sitesHash = r.hgetall @favoriteURLs0
    end
    erb :index
@@ -165,10 +167,11 @@ post '/update' do
    if ($newBg == "default")
      $newBg = "95a2a6"
    end
+   
    $newBgImg = params[:bgimage]
    
    r.select 0
-   r.hmset "user" session[:email], "setting_bg" $newBgImg, "setting_bg_color" $newBg
+   r.hmset "user_prefs", "user", session[:email], "setting_bg", $newBgImg, "setting_bg_color", $newBg
    
    redirect '/'
 end
