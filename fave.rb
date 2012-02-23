@@ -50,7 +50,7 @@ get '/' do
   puts $newBgImg
    if(session[:email] == nil)
       REDIS.select 0
-      @annon_sitesHash = REDIS.hgetall 'favoriteURLs1'
+      @sitesHash = REDIS.hgetall 'favoriteURLs1'
    else 
       REDIS.select 0
       @user_prefs = REDIS.hgetall "user_prefs"
@@ -68,8 +68,8 @@ end
 get '/customize' do  
    if(session[:email] == nil)
       REDIS.select 0
-      @annon_sitesHash = REDIS.hgetall 'favoriteURLs1'
-      @annon_toBeDeletedLinksHash = REDIS.hgetall 'favoriteURLs1'
+      @sitesHash = REDIS.hgetall 'favoriteURLs1'
+      @toBeDeletedLinksHash = REDIS.hgetall 'favoriteURLs1'
    else 
       REDIS.select 0
       @sitesHash = REDIS.hgetall @favoriteURLs0
@@ -142,7 +142,7 @@ post '/removeURL' do
       REDIS.select 0
       @annon_hiddenURL = params[:hiddenURL]
       @annon_siteName = params[:siteName]
-      @annon_suggestedLinks[@annon_hiddenURL] = @annon_siteName
+      @suggestedLinks[@annon_hiddenURL] = @annon_siteName
       REDIS.hdel 'favoriteURLs1', @annon_hiddenURL
       $customImages.delete(@annon_hiddenURL)
       redirect '/'
