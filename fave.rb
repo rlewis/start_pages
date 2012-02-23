@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'redis'
+require 'rubygems' # may be needed by heroku
 
 r = Redis.new
 
