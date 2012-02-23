@@ -157,5 +157,9 @@ post '/update' do
      $newBg = "95a2a6"
    end
    $newBgImg = params[:bgimage]
+   
+   r.select 0
+   r.hmset "user" session[:email], "setting_bg" $newBgImg, "setting_bg_color" $newBg
+   
    redirect '/'
 end
