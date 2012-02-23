@@ -28,7 +28,7 @@
     <p class="back"><a href="/customize">Go back to customizing your start page</a></p>
   
 </form>	
-<%if(@prompt)%>
+<%if(session[:email] == nil)%>
    <label> </label>
 <%elsif(@invalidInfo)%>
    <div>

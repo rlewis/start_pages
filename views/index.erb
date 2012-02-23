@@ -7,7 +7,7 @@
 <% if $newBg=="default" && $newBgImg=="default"%>
   <body>
 <% else %>
-  <body style="background: #<%=$newBg%> url(../images/<%=$newBgImg%>Gradient.png) repeat-x fixed;"> 
+  <body style="background: #<%=@user_prefs['setting_bg_color']%> url(../images/<%=@user_prefs['setting_bg']%>Gradient.png) repeat-x fixed;"> 
 <% end %>
 
     <div class="top_right_text">
