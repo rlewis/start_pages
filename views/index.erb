@@ -34,7 +34,7 @@
 			</li>
 		<% #if there are custom sites to display, display them:
 		end 
-		if !@sitesHash.empty?%>
+		if @sitesHash != nil%>
 			<%@sitesHash.each do |k, v|%>
 				<% @url=@sitesHash.index(v) %>
         			<li><a href="<%=@url%>" id="link">
@@ -45,7 +45,7 @@
 				</li>
 			<%end%>
 		<%end
-		if !@annon_sitesHash.empty?%>
+		if @annon_sitesHash != nil %>
 			<%@annon_sitesHash.each do |k, v|%>
 				<% @url=@annon_sitesHash.index(v) %>
         			<li><a href="<%=@url%>" id="link">
