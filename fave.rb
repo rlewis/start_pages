@@ -10,6 +10,7 @@ before do
 end
 
 @sitesHash = {}
+@annon_sitesHash = {}
 @toBeDeletedLinksHash = {}
 @favoriteURLs0
 
@@ -48,8 +49,8 @@ get '/' do
 	puts $newBg
   puts $newBgImg
    if(session[:email] == nil)
-      r.select 1
-      @sitesHash = r.hgetall 'favoriteURLs1'
+      r.select 0
+      @annon_sitesHash = r.hgetall 'favoriteURLs1'
    else 
       r.select 0
       @user_prefs = r.hgetall "user_prefs"
@@ -66,9 +67,9 @@ end
 
 get '/customize' do  
    if(session[:email] == nil)
-      r.select 1
-      @sitesHash = r.hgetall 'favoriteURLs1'
-      @toBeDeletedLinksHash = r.hgetall 'favoriteURLs1'
+      r.select 0
+      @annon_sitesHash = r.hgetall 'favoriteURLs1'
+      @annon_toBeDeletedLinksHash = r.hgetall 'favoriteURLs1'
    else 
       r.select 0
       @sitesHash = r.hgetall @favoriteURLs0
@@ -119,7 +120,7 @@ post '/addURL' do
    end
 
    if(session[:email] == nil)
-      r.select 1
+      r.select 0
       if((@hiddenURL != nil) && (@url == nil))
    	 r.hsetnx 'favoriteURLs1',@hiddenURL, @siteName 
       else
@@ -138,12 +139,12 @@ end
 
 post '/removeURL' do
      if(session[:email] == nil)
-      r.select 1
-      @hiddenURL = params[:hiddenURL]
-      @siteName = params[:siteName]
-      @suggestedLinks[@hiddenURL] = @siteName
-      r.hdel 'favoriteURLs1', @hiddenURL
-      $customImages.delete(@hiddenURL)
+      r.select 0
+      @annon_hiddenURL = params[:hiddenURL]
+      @annon_siteName = params[:siteName]
+      @annon_suggestedLinks[@annon_hiddenURL] = @annon_siteName
+      r.hdel 'favoriteURLs1', @annon_hiddenURL
+      $customImages.delete(@annon_hiddenURL)
       redirect '/'
    else
       r.select 0
@@ -157,7 +158,7 @@ post '/removeURL' do
 end
 
 get '/logout' do
-   r.select 1
+   r.select 0
    r.flushdb 
    session.clear  
    redirect '/'
@@ -184,3 +185,5 @@ post '/update' do
    
    redirect '/'
 end
+
+
