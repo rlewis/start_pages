@@ -2,8 +2,6 @@ require 'sinatra'
 require 'redis'
 require 'rubygems' # may be needed by heroku
 
-r = Redis.new
-
 before do
    @suggestedLinks = {"http://www.bankofamerica.com" => ["Bank Of America", "icon-boa.png"], "http://www.fullerton.edu" => ["Cal State Fulllerton", "icon-csuf.png"], "http://www.youtube.com" => ["YouTube", "icon-youtube.png"], "http://www.facebook.com" => ["Facebook", "icon-facebook.png"],  "http://www.ruby-doc.org/core-1.9.3/" => ["Ruby API", "icon-ruby.png"], "http://redis.io/commands" => ["Redis API", "icon-redis.png"], "http://www.amazon.com" => ["Amazon", "icon-amazon.png"], "http://www.github.com" => ["GitHub", "icon-github.png"], "http://www.gmail.com" => ["Gmail", "icon-gmail.png"], "http://www.twitter.com" => ["Twitter", "icon-twitter.png"]}
    @toBeDeletedLinksHash = {}
@@ -15,6 +13,10 @@ end
 @favoriteURLs0
 
 configure do
+
+   uri = URI.parse(ENV["REDISTOGO_URL"])
+   r = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+   
    enable :sessions
    $newBg = "default"
    $newBgImg = "default"
@@ -42,14 +44,15 @@ end
 
 #The homepage displays all the favorite URLs
 get '/' do  
+	puts $newBg
+  puts $newBgImg
    if(session[:email] == nil)
       r.select 1
       @sitesHash = r.hgetall 'favoriteURLs1'
    else 
       r.select 0
       @user_prefs = r.hgetall "user_prefs"
-      $newBg = @user_prefs["setting_bg_color"]
-      $newBgImg = @user_prefs["setting_bg"]
+      puts @user_prefs
       @sitesHash = r.hgetall @favoriteURLs0
    end
    erb :index
@@ -102,12 +105,12 @@ post '/addURL' do
    @url = params[:myURL]
    @siteName = params[:siteName]
 
-if params[:file]!=nil
+   if params[:file]=='nil'
    #here we upload the image
       @fileName = params[:file][:filename]
       File.open('public/images/' + @fileName, "w") do |f|
       f.write(params[:file][:tempfile].read)
-end
+      end
 
    #add the image to the "customImages" hash, which we use to display the custom images
    #on index.erb   
