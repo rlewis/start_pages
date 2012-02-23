@@ -20,18 +20,8 @@
 
     <div id="container">
 	<ul class="horizontal_list">
-		<% if @sitesHash != nil%>
-			<%@sitesHash.each do |k, v|%>
-				<% @url=@sitesHash.index(v) %>
-        			<li><a href="<%=@url%>" id="link">
-       				<% @image = @suggestedLinks.select {|k,v| k=="#{@url}"}
-					   @image.each do |k, v| %>
-						<img src="images/<%= @suggestedLinks[k][1] %>" /></a>
-       	 			<%end%>
-				</li>
-			<%end%>
-		<%else %>
-		<li><a href="http://www.facebook.com"><img src="images/icon-facebook.png" /></a>
+		<% if @sitesHash.empty? %>
+			<li><a href="http://www.facebook.com"><img src="images/icon-facebook.png" /></a>
 			</li>
 			<li><a href="http://www.gmail.com"><img src="images/icon-gmail.png" /></a>
 			</li>
@@ -41,7 +31,16 @@
 			</li>
 			<li><a href="http://www.github.com"><img src="images/icon-github.png" /></a>
 			</li>
-			
+		<%else %>
+			<%@sitesHash.each do |k, v|%>
+				<% @url=@sitesHash.index(v) %>
+        			<li><a href="<%=@url%>" id="link">
+       				<% @image = @suggestedLinks.select {|k,v| k=="#{@url}"}
+					   @image.each do |k, v| %>
+						<img src="images/<%= @suggestedLinks[k][1] %>" /></a>
+       	 			<%end%>
+				</li>
+			<%end%>
 		<%end%>
     <%$customImages.each do |k,v|%>
 		<%url=$customImages.index(v) %>
