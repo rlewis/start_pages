@@ -16,7 +16,7 @@ end
 
 configure do
    uri = URI.parse(ENV["REDISTOGO_URL"])
-   r = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+   REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 
    
    enable :sessions
@@ -32,13 +32,13 @@ get '/register' do
 end
 
 post '/register' do
-   r.select 0
+   REDIS.select 0
    if((params[:email] == "") || (params[:password] == ""))
       @emptyFields = true
-   elsif(r.hexists 'userInfo', params[:email])
+   elsif(REDIS.hexists 'userInfo', params[:email])
       @duplicate = true
    else
-      r.hset 'userInfo', params[:email], params[:password]
+      REDIS.hset 'userInfo', params[:email], params[:password]
    end
    erb :register
 end
@@ -49,13 +49,13 @@ get '/' do
 	puts $newBg
   puts $newBgImg
    if(session[:email] == nil)
-      r.select 0
-      @annon_sitesHash = r.hgetall 'favoriteURLs1'
+      REDIS.select 0
+      @annon_sitesHash = REDIS.hgetall 'favoriteURLs1'
    else 
-      r.select 0
-      @user_prefs = r.hgetall "user_prefs"
+      REDIS.select 0
+      @user_prefs = REDIS.hgetall "user_prefs"
       puts @user_prefs
-      @sitesHash = r.hgetall @favoriteURLs0
+      @sitesHash = REDIS.hgetall @favoriteURLs0
    end
    erb :index
 end
@@ -67,13 +67,13 @@ end
 
 get '/customize' do  
    if(session[:email] == nil)
-      r.select 0
-      @annon_sitesHash = r.hgetall 'favoriteURLs1'
-      @annon_toBeDeletedLinksHash = r.hgetall 'favoriteURLs1'
+      REDIS.select 0
+      @annon_sitesHash = REDIS.hgetall 'favoriteURLs1'
+      @annon_toBeDeletedLinksHash = REDIS.hgetall 'favoriteURLs1'
    else 
-      r.select 0
-      @sitesHash = r.hgetall @favoriteURLs0
-      @toBeDeletedLinksHash = r.hgetall @favoriteURLs0
+      REDIS.select 0
+      @sitesHash = REDIS.hgetall @favoriteURLs0
+      @toBeDeletedLinksHash = REDIS.hgetall @favoriteURLs0
    end
    erb :customize
 end
@@ -86,14 +86,14 @@ end
 
 #login page
 post '/login' do
-  r.select 0
+  REDIS.select 0
 
   @invalidInfo = false
-   if (!(r.hexists 'userInfo', params[:email]) && !(r.hexists 'userInfo', params[:password]))
+   if (!(REDIS.hexists 'userInfo', params[:email]) && !(REDIS.hexists 'userInfo', params[:password]))
      @invalidInfo = true
    end
 
-  if ((r.hexists 'userInfo', params[:email]) && !((r.hget 'userInfo', params[:email]).eql? params[:password]) )
+  if ((REDIS.hexists 'userInfo', params[:email]) && !((REDIS.hget 'userInfo', params[:email]).eql? params[:password]) )
      @invalidInfo = true
   else
      session[:email] = params[:email]
@@ -120,18 +120,18 @@ post '/addURL' do
    end
 
    if(session[:email] == nil)
-      r.select 0
+      REDIS.select 0
       if((@hiddenURL != nil) && (@url == nil))
-   	 r.hsetnx 'favoriteURLs1',@hiddenURL, @siteName 
+   	 REDIS.hsetnx 'favoriteURLs1',@hiddenURL, @siteName 
       else
-        r.hsetnx 'favoriteURLs1', @url, @siteName
+        REDIS.hsetnx 'favoriteURLs1', @url, @siteName
       end
    else
-      r.select 0
+      REDIS.select 0
       if((@hiddenURL != nil) && (@url == nil))
-   	 r.hsetnx @favoriteURLs0,@hiddenURL, @siteName 
+   	 REDIS.hsetnx @favoriteURLs0,@hiddenURL, @siteName 
       else
-        r.hsetnx @favoriteURLs0, @url, @siteName
+        REDIS.hsetnx @favoriteURLs0, @url, @siteName
       end
    end
    redirect '/customize'
@@ -139,27 +139,27 @@ end
 
 post '/removeURL' do
      if(session[:email] == nil)
-      r.select 0
+      REDIS.select 0
       @annon_hiddenURL = params[:hiddenURL]
       @annon_siteName = params[:siteName]
       @annon_suggestedLinks[@annon_hiddenURL] = @annon_siteName
-      r.hdel 'favoriteURLs1', @annon_hiddenURL
+      REDIS.hdel 'favoriteURLs1', @annon_hiddenURL
       $customImages.delete(@annon_hiddenURL)
       redirect '/'
    else
-      r.select 0
+      REDIS.select 0
       @hiddenURL = params[:hiddenURL]
       @siteName = params[:siteName]
       @suggestedLinks[@hiddenURL] = @siteName
-      r.hdel @favoriteURLs0, @hiddenURL
+      REDIS.hdel @favoriteURLs0, @hiddenURL
       $customImages.delete(@hiddenURL)
       redirect '/'
    end  
 end
 
 get '/logout' do
-   r.select 0
-   r.flushdb 
+   REDIS.select 0
+   REDIS.flushdb 
    session.clear  
    redirect '/'
 end
@@ -167,7 +167,7 @@ end
 
 #this section is no longer needed since the favorite URLs will be displayed on the front page.
 get '/mySites' do
-   @sitesHash = r.hgetall 'favoriteURLs'
+   @sitesHash = REDIS.hgetall 'favoriteURLs'
    erb :index
 end
 
@@ -180,8 +180,8 @@ post '/update' do
    
    $newBgImg = params[:bgimage]
    
-   r.select 0
-   r.hmset "user_prefs", "user", session[:email], "setting_bg", $newBgImg, "setting_bg_color", $newBg
+   REDIS.select 0
+   REDIS.hmset "user_prefs", "user", session[:email], "setting_bg", $newBgImg, "setting_bg_color", $newBg
    
    redirect '/'
 end
