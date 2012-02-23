@@ -107,8 +107,10 @@ post '/addURL' do
       File.open('public/images/' + @fileName, "w") do |f|
       f.write(params[:file][:tempfile].read)
       end
-   
-$customImages = {@url => @fileName}
+
+   #add the image to the "customImages" hash, which we use to display the custom images
+   #on index.erb   
+	$customImages = {@url => @fileName}
    
 
    if(session[:email] == nil)
@@ -136,6 +138,7 @@ post '/removeURL' do
       @siteName = params[:siteName]
       @suggestedLinks[@hiddenURL] = @siteName
       r.hdel 'favoriteURLs1', @hiddenURL
+      $customImages.delete(@hiddenURL)
       redirect '/'
    else
       r.select 0
@@ -143,6 +146,7 @@ post '/removeURL' do
       @siteName = params[:siteName]
       @suggestedLinks[@hiddenURL] = @siteName
       r.hdel @favoriteURLs0, @hiddenURL
+      $customImages.delete(@hiddenURL)
       redirect '/'
    end  
 end
