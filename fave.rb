@@ -103,12 +103,12 @@ post '/addURL' do
    @url = params[:myURL]
    @siteName = params[:siteName]
 
-   if params[:file]=='nil'
+if params[:file]!=nil
    #here we upload the image
       @fileName = params[:file][:filename]
       File.open('public/images/' + @fileName, "w") do |f|
       f.write(params[:file][:tempfile].read)
-      end
+end
 
    #add the image to the "customImages" hash, which we use to display the custom images
    #on index.erb   
